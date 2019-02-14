@@ -11,22 +11,29 @@ public class PlayerMovement : MonoBehaviour
     private float maxTurnSpeed;
 
     private float DashTimer;
-    private float DashCD = 1.5f;
+    private float DashCD = 2.5f;
     private bool isDashing = false;
+
   
     private Quaternion RotTo;
     private float RotDeg;
     private Rigidbody2D pRB;
     private Animator anim;
+    public GameObject head; 
+    public GameObject body;
+    private Collider2D currentCollider;
+    
     // Start is called before the first frame update
 
     void Start()
     {
-        MS = 5f;
+        MS = 7f;
         diagonalMS = 1f;
         RotDeg = 0;
         maxTurnSpeed = 900f;
         pRB = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
+        currentCollider = head.GetComponent<Collider2D>();
     }
 
     // Update is called once per frame
@@ -74,7 +81,9 @@ public class PlayerMovement : MonoBehaviour
             {
                 isDashing = true;
                 DashTimer = DashCD;
-                MS = 10f;
+                MS = 15f;
+                anim.SetBool("isDashing", true);
+                currentCollider = body.GetComponent<Collider2D>();
             }
         }
 
@@ -89,10 +98,16 @@ public class PlayerMovement : MonoBehaviour
         if(isDashing)
         {
             DashTimer -= Time.deltaTime;
-            if(DashTimer <=0f)
+            if(DashTimer <= 1.5f && DashTimer > 0f)
+            {
+                MS -= .05f;
+            }
+            if(DashTimer <= 0f)
             {
                 isDashing = false;
-                MS = 5f;
+                MS = 7f;
+                anim.SetBool("isDashing", false);
+                currentCollider = head.GetComponent<Collider2D>();
             }
         }
 
